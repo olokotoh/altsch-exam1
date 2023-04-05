@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eks-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  rules:
+    - host: prometheus.octoarts.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  name: http
+    - host: grafana.octoarts.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  name: service
+    - host: socksapp.octoarts.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: front-end
+                port:
+                  name: http
+    - host: berlin.octoarts.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: berlin-service
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - prometheus.octoarts.me
+        - grafana.octoarts.me
+        - socksapp.octoarts.me
+        - berlin.octoarts.me
+      secretName: apps-rashraj

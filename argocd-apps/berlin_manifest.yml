@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: berlin
+  namespace: portfolioapp
+  labels:
+    app: berlin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: berlin
+  template:
+    metadata:
+      labels:
+        app: berlin
+    spec:
+      containers:
+      - name: berlin
+        image: ghcr.io/rashraj/berlin:latest
+        ports:
+        - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: berlin-service
+  namespace: portfolioapp
+
+spec:
+  selector:
+    app: berlin
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
